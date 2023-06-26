@@ -15,38 +15,34 @@
 */
 
 class Stack {
-  #allSettled;
-  #isSettledAll;
+  #cloud;
   #storage;
+  #keys;
 
   constructor(obj) {
-    this.#allSettled = "";
-    this.#isSettledAll = false;
+    this.#cloud = "";
     this.#storage = obj ? obj : {};
+    this.#keys = {};
   }
 
   insert(key, value) {
+    this.#keys[key] = true;
     this.#storage[key] = value;
     return this.#storage;
   }
 
   find(key) {
-    if (this.#isSettledAll) {
-      return this.#allSettled;
+    if (!this.#keys[key]) {
+      return this.#cloud;
     }
-    const value = this.storage[key];
+    const value = this.#storage[key];
     if (!value) return undefined;
     return value;
   }
 
   setAll(value) {
-    // for (const key in this.storage) {
-    //   if (Object.hasOwn(this.storage, key)) {
-    //     this.storage[key] = value;
-    //   }
-    // }
-    this.#allSettled = value;
-    this.#isSettledAll = true;
+    this.#cloud = value;
+    this.#keys = {};
     return `All values settled to - ${value}`;
   }
 
@@ -68,9 +64,8 @@ const instance = new Stack();
 console.log(instance.insert("1", "hello"));
 console.log(instance.insert("2", "world"));
 console.log(instance.insert("3", "!"));
-// console.log(instance.find(1));
-console.log(instance.setAll("hello"));
-console.log(instance.find("3"));
 
-// console.log(instance.storage);
-// console.log(console.log(instance));
+console.log(instance.setAll("true"));
+
+console.log(instance.insert("4", "value"));
+console.log(instance.find("4"));
